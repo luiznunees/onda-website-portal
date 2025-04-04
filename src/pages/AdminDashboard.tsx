@@ -22,8 +22,18 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-// Mock data for demonstration
-const initialRegistrations = [
+type Registration = {
+  id: number;
+  name: string;
+  type: "surfista" | "marujo" | "equipe";
+  status: "pendente" | "pago" | "confirmado";
+  phone: string;
+  email: string;
+  registrationDate: string;
+};
+
+// Mock data for demonstration - now with correct explicit typing
+const initialRegistrations: Registration[] = [
   {
     id: 1,
     name: "Lucas Silva",
@@ -70,16 +80,6 @@ const initialRegistrations = [
     registrationDate: "2025-01-03T11:10:00"
   }
 ];
-
-type Registration = {
-  id: number;
-  name: string;
-  type: "surfista" | "marujo" | "equipe";
-  status: "pendente" | "pago" | "confirmado";
-  phone: string;
-  email: string;
-  registrationDate: string;
-};
 
 const AdminDashboard = () => {
   const { toast } = useToast();
