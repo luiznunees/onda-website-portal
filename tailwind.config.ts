@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,30 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+                // ONDA theme colors
+                onda: {
+                    blue: {
+                        light: '#3498db',
+                        DEFAULT: '#2980b9', 
+                        dark: '#1d6fa5'
+                    },
+                    teal: {
+                        light: '#1abc9c',
+                        DEFAULT: '#16a085',
+                        dark: '#0e6655'
+                    },
+                    yellow: {
+                        light: '#f1c40f',
+                        DEFAULT: '#f39c12',
+                        dark: '#d35400'
+                    },
+                    orange: {
+                        light: '#e67e22',
+                        DEFAULT: '#d35400',
+                        dark: '#a04000'
+                    },
+                }
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -70,25 +94,28 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
-				}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+                'wave': {
+                    '0%': { transform: 'translateX(0) translateZ(0) scaleY(1)' },
+                    '50%': { transform: 'translateX(-25%) translateZ(0) scaleY(0.8)' },
+                    '100%': { transform: 'translateX(-50%) translateZ(0) scaleY(1)' }
+                },
+                'float': {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-10px)' }
+                }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+                'wave': 'wave 12s linear infinite',
+                'float': 'float 4s ease-in-out infinite'
 			}
 		}
 	},
