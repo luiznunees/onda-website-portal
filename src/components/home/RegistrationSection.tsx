@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Check, QrCode, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent } from '@/components/ui/card';
 
 const RegistrationSection = () => {
   const { toast } = useToast();
@@ -62,6 +63,33 @@ const RegistrationSection = () => {
         </motion.div>
         
         <div className="max-w-4xl mx-auto">
+          {/* Registration info card */}
+          <Card className="mb-10 border-onda-blue/20 shadow-md">
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex flex-col items-center p-4 bg-onda-blue/5 rounded-lg text-center">
+                  <span className="text-onda-blue text-2xl font-bold mb-2">R$ 100,00</span>
+                  <span className="text-gray-600">Custo da inscrição</span>
+                </div>
+                
+                <div className="flex flex-col items-center p-4 bg-onda-blue/5 rounded-lg text-center">
+                  <span className="text-onda-blue text-2xl font-bold mb-2">12-14 anos</span>
+                  <span className="text-gray-600">Faixa etária</span>
+                </div>
+                
+                <div className="flex flex-col items-center p-4 bg-onda-blue/5 rounded-lg text-center">
+                  <span className="text-onda-blue text-2xl font-bold mb-2">Xangri-lá</span>
+                  <span className="text-gray-600">e região</span>
+                </div>
+                
+                <div className="flex flex-col items-center p-4 bg-onda-blue/5 rounded-lg text-center">
+                  <span className="text-onda-blue text-2xl font-bold mb-2">50 vagas</span>
+                  <span className="text-gray-600">Apenas disponíveis</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
             <div className="p-8">
               <h3 className="text-2xl font-bold mb-6">Escolha a forma de pagamento:</h3>
