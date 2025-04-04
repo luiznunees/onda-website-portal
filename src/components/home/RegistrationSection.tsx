@@ -5,10 +5,44 @@ import { Check, QrCode, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
+import { z } from 'zod';
 
 const RegistrationSection = () => {
   const { toast } = useToast();
   const [selectedPayment, setSelectedPayment] = useState<'pix' | 'later' | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    age: '',
+    phone: '',
+    email: '',
+    address: '',
+    parentName: '',
+    parentPhone: '',
+    healthInfo: '',
+    shirtSize: 'M',
+    hasExperience: 'no',
+    howHeard: '',
+    acceptTerms: false
+  });
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleRadioChange = (name: string, value: string) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleCheckboxChange = (name: string, checked: boolean) => {
+    setFormData(prev => ({ ...prev, [name]: checked }));
+  };
   
   const handlePaymentSelect = (method: 'pix' | 'later') => {
     setSelectedPayment(method);
@@ -38,11 +72,68 @@ const RegistrationSection = () => {
       return;
     }
     
+    setShowForm(true);
+  };
+  
+  const handleSubmitForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!formData.fullName || !formData.age || !formData.phone || !formData.email || !formData.parentName || !formData.parentPhone) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos obrigatórios.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!formData.acceptTerms) {
+      toast({
+        title: "Termos e Condições",
+        description: "Você precisa aceitar os termos para prosseguir.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Age validation
+    const age = parseInt(formData.age);
+    if (isNaN(age) || age < 12 || age > 14) {
+      toast({
+        title: "Idade inválida",
+        description: "O evento é para jovens entre 12 e 14 anos.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     toast({
-      title: "Redirecionando para formulário",
-      description: "Na versão completa, você seria direcionado para o formulário de inscrição.",
+      title: "Inscrição recebida!",
+      description: selectedPayment === 'pix' 
+        ? "Seu QR Code Pix será enviado para o e-mail cadastrado." 
+        : "Entre em contato com um dos organizadores para efetuar o pagamento.",
       variant: "default",
     });
+    
+    // Reset form
+    setFormData({
+      fullName: '',
+      age: '',
+      phone: '',
+      email: '',
+      address: '',
+      parentName: '',
+      parentPhone: '',
+      healthInfo: '',
+      shirtSize: 'M',
+      hasExperience: 'no',
+      howHeard: '',
+      acceptTerms: false
+    });
+    
+    setShowForm(false);
+    setSelectedPayment(null);
   };
   
   return (
@@ -90,89 +181,330 @@ const RegistrationSection = () => {
             </CardContent>
           </Card>
           
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="p-8">
-              <h3 className="text-2xl font-bold mb-6">Escolha a forma de pagamento:</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Pix Option */}
-                <div 
-                  className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
-                    selectedPayment === 'pix' 
-                      ? 'border-onda-teal bg-onda-teal/10' 
-                      : 'border-gray-200 hover:border-onda-teal/50'
-                  }`}
-                  onClick={() => handlePaymentSelect('pix')}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                      <QrCode className="text-onda-teal mr-3" size={24} />
-                      <h4 className="text-xl font-medium">Pix Imediato</h4>
+          {!showForm ? (
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-6">Escolha a forma de pagamento:</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Pix Option */}
+                  <div 
+                    className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
+                      selectedPayment === 'pix' 
+                        ? 'border-onda-teal bg-onda-teal/10' 
+                        : 'border-gray-200 hover:border-onda-teal/50'
+                    }`}
+                    onClick={() => handlePaymentSelect('pix')}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <QrCode className="text-onda-teal mr-3" size={24} />
+                        <h4 className="text-xl font-medium">Pix Imediato</h4>
+                      </div>
+                      {selectedPayment === 'pix' && <Check className="text-onda-teal" size={24} />}
                     </div>
-                    {selectedPayment === 'pix' && <Check className="text-onda-teal" size={24} />}
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-start">
+                        <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
+                        <span>Gere o QR Code na hora</span>
+                      </li>
+                      <li className="flex items-start">
+                        <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
+                        <span>Confirmação instantânea</span>
+                      </li>
+                      <li className="flex items-start">
+                        <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
+                        <span>Garanta sua vaga imediatamente</span>
+                      </li>
+                    </ul>
                   </div>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex items-start">
-                      <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
-                      <span>Gere o QR Code na hora</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
-                      <span>Confirmação instantânea</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
-                      <span>Garanta sua vaga imediatamente</span>
-                    </li>
-                  </ul>
+                  
+                  {/* Pay Later Option */}
+                  <div 
+                    className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
+                      selectedPayment === 'later' 
+                        ? 'border-onda-teal bg-onda-teal/10' 
+                        : 'border-gray-200 hover:border-onda-teal/50'
+                    }`}
+                    onClick={() => handlePaymentSelect('later')}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <ArrowRight className="text-onda-teal mr-3" size={24} />
+                        <h4 className="text-xl font-medium">Pagar Depois</h4>
+                      </div>
+                      {selectedPayment === 'later' && <Check className="text-onda-teal" size={24} />}
+                    </div>
+                    <ul className="space-y-2 text-gray-600">
+                      <li className="flex items-start">
+                        <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
+                        <span>Pague diretamente ao responsável</span>
+                      </li>
+                      <li className="flex items-start">
+                        <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
+                        <span>Opção de Pix ou dinheiro</span>
+                      </li>
+                      <li className="flex items-start">
+                        <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
+                        <span>Cadastre-se agora e pague depois</span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
                 
-                {/* Pay Later Option */}
-                <div 
-                  className={`border-2 rounded-lg p-6 cursor-pointer transition-all ${
-                    selectedPayment === 'later' 
-                      ? 'border-onda-teal bg-onda-teal/10' 
-                      : 'border-gray-200 hover:border-onda-teal/50'
-                  }`}
-                  onClick={() => handlePaymentSelect('later')}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center">
-                      <ArrowRight className="text-onda-teal mr-3" size={24} />
-                      <h4 className="text-xl font-medium">Pagar Depois</h4>
-                    </div>
-                    {selectedPayment === 'later' && <Check className="text-onda-teal" size={24} />}
-                  </div>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex items-start">
-                      <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
-                      <span>Pague diretamente ao responsável</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
-                      <span>Opção de Pix ou dinheiro</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check size={16} className="mr-2 mt-1 text-onda-teal flex-shrink-0" />
-                      <span>Cadastre-se agora e pague depois</span>
-                    </li>
-                  </ul>
+                <div className="mt-8 text-center">
+                  <Button 
+                    className="bg-onda-blue hover:bg-onda-blue-dark text-white text-lg px-8 py-6 h-auto rounded-full"
+                    onClick={handleContinue}
+                  >
+                    Continuar para o formulário
+                  </Button>
+                  <p className="mt-4 text-sm text-gray-500">
+                    Ao continuar, você concorda com os termos de participação do ONDA 2025.
+                  </p>
                 </div>
               </div>
-              
-              <div className="mt-8 text-center">
-                <Button 
-                  className="bg-onda-blue hover:bg-onda-blue-dark text-white text-lg px-8 py-6 h-auto rounded-full"
-                  onClick={handleContinue}
-                >
-                  Continuar para o formulário
-                </Button>
-                <p className="mt-4 text-sm text-gray-500">
-                  Ao continuar, você concorda com os termos de participação do ONDA 2025.
-                </p>
-              </div>
             </div>
-          </div>
+          ) : (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white rounded-xl shadow-lg overflow-hidden"
+            >
+              <div className="p-8">
+                <h3 className="text-2xl font-bold mb-6">Formulário de Inscrição</h3>
+                
+                <form onSubmit={handleSubmitForm}>
+                  <div className="space-y-8">
+                    {/* Participant Information */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-onda-blue mb-4">Informações do Participante</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Full Name */}
+                        <div className="space-y-2">
+                          <Label htmlFor="fullName">Nome Completo *</Label>
+                          <Input 
+                            id="fullName" 
+                            name="fullName" 
+                            value={formData.fullName}
+                            onChange={handleInputChange}
+                            placeholder="Nome completo do participante"
+                            required
+                          />
+                        </div>
+                        
+                        {/* Age */}
+                        <div className="space-y-2">
+                          <Label htmlFor="age">Idade *</Label>
+                          <Input 
+                            id="age" 
+                            name="age" 
+                            value={formData.age}
+                            onChange={handleInputChange}
+                            type="number" 
+                            min="12" 
+                            max="14"
+                            placeholder="Entre 12 e 14 anos"
+                            required
+                          />
+                        </div>
+                        
+                        {/* Phone */}
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Telefone/WhatsApp do Participante *</Label>
+                          <Input 
+                            id="phone" 
+                            name="phone" 
+                            value={formData.phone}
+                            onChange={handleInputChange}
+                            placeholder="(XX) XXXXX-XXXX"
+                            required
+                          />
+                        </div>
+                        
+                        {/* Email */}
+                        <div className="space-y-2">
+                          <Label htmlFor="email">E-mail *</Label>
+                          <Input 
+                            id="email" 
+                            name="email" 
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            type="email"
+                            placeholder="email@exemplo.com"
+                            required
+                          />
+                        </div>
+                        
+                        {/* Address */}
+                        <div className="space-y-2 md:col-span-2">
+                          <Label htmlFor="address">Endereço Completo *</Label>
+                          <Input 
+                            id="address" 
+                            name="address" 
+                            value={formData.address}
+                            onChange={handleInputChange}
+                            placeholder="Rua, número, bairro, cidade"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Parent/Guardian Information */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-onda-blue mb-4">Informações do Responsável</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Parent Name */}
+                        <div className="space-y-2">
+                          <Label htmlFor="parentName">Nome do Responsável *</Label>
+                          <Input 
+                            id="parentName" 
+                            name="parentName" 
+                            value={formData.parentName}
+                            onChange={handleInputChange}
+                            placeholder="Nome completo do responsável"
+                            required
+                          />
+                        </div>
+                        
+                        {/* Parent Phone */}
+                        <div className="space-y-2">
+                          <Label htmlFor="parentPhone">Telefone do Responsável *</Label>
+                          <Input 
+                            id="parentPhone" 
+                            name="parentPhone" 
+                            value={formData.parentPhone}
+                            onChange={handleInputChange}
+                            placeholder="(XX) XXXXX-XXXX"
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Additional Information */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-onda-blue mb-4">Informações Adicionais</h4>
+                      
+                      {/* Health Information */}
+                      <div className="space-y-2 mb-6">
+                        <Label htmlFor="healthInfo">Informações de Saúde</Label>
+                        <Textarea 
+                          id="healthInfo" 
+                          name="healthInfo" 
+                          value={formData.healthInfo}
+                          onChange={handleInputChange}
+                          placeholder="Alergias, medicamentos, condições médicas, restrições alimentares, etc."
+                          className="h-24"
+                        />
+                      </div>
+                      
+                      {/* T-Shirt Size */}
+                      <div className="space-y-3 mb-6">
+                        <Label>Tamanho de Camiseta</Label>
+                        <RadioGroup 
+                          defaultValue="M" 
+                          value={formData.shirtSize}
+                          onValueChange={(value) => handleRadioChange('shirtSize', value)}
+                          className="flex flex-wrap gap-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="PP" id="shirt-pp" />
+                            <Label htmlFor="shirt-pp">PP</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="P" id="shirt-p" />
+                            <Label htmlFor="shirt-p">P</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="M" id="shirt-m" />
+                            <Label htmlFor="shirt-m">M</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="G" id="shirt-g" />
+                            <Label htmlFor="shirt-g">G</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="GG" id="shirt-gg" />
+                            <Label htmlFor="shirt-gg">GG</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                      
+                      {/* Has Surfing Experience */}
+                      <div className="space-y-3 mb-6">
+                        <Label>Tem experiência com surf?</Label>
+                        <RadioGroup 
+                          defaultValue="no" 
+                          value={formData.hasExperience}
+                          onValueChange={(value) => handleRadioChange('hasExperience', value)}
+                          className="flex gap-4"
+                        >
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="yes" id="exp-yes" />
+                            <Label htmlFor="exp-yes">Sim</Label>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="no" id="exp-no" />
+                            <Label htmlFor="exp-no">Não</Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                      
+                      {/* How they heard about the event */}
+                      <div className="space-y-2">
+                        <Label htmlFor="howHeard">Como ficou sabendo do ONDA?</Label>
+                        <Input 
+                          id="howHeard" 
+                          name="howHeard" 
+                          value={formData.howHeard}
+                          onChange={handleInputChange}
+                          placeholder="Amigos, Instagram, Facebook, etc."
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Terms and Conditions */}
+                    <div className="space-y-4">
+                      <div className="flex items-start space-x-3">
+                        <Checkbox 
+                          id="acceptTerms" 
+                          checked={formData.acceptTerms}
+                          onCheckedChange={(checked) => handleCheckboxChange('acceptTerms', checked === true)}
+                        />
+                        <div className="grid gap-1.5 leading-none">
+                          <Label htmlFor="acceptTerms" className="text-sm font-normal">
+                            Eu aceito os termos e condições do ONDA 2025, incluindo a autorização de uso de imagem e dados para fins 
+                            relacionados ao evento. *
+                          </Label>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Submit and Cancel Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                      <Button 
+                        type="submit"
+                        className="bg-onda-blue hover:bg-onda-blue-dark text-white text-lg px-8 py-6 h-auto sm:flex-1"
+                      >
+                        Finalizar Inscrição
+                      </Button>
+                      <Button 
+                        type="button"
+                        variant="outline"
+                        className="border-onda-blue text-onda-blue hover:bg-onda-blue/5 text-lg px-8 py-6 h-auto sm:flex-1"
+                        onClick={() => setShowForm(false)}
+                      >
+                        Voltar
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
     </section>
