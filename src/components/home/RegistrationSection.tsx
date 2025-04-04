@@ -7,10 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
-import { z } from 'zod';
 
 const RegistrationSection = () => {
   const { toast } = useToast();
@@ -19,24 +16,15 @@ const RegistrationSection = () => {
   const [formData, setFormData] = useState({
     fullName: '',
     age: '',
-    phone: '',
-    email: '',
-    address: '',
+    city: '',
+    neighborhood: '',
     parentName: '',
     parentPhone: '',
-    healthInfo: '',
-    shirtSize: 'M',
-    hasExperience: 'no',
-    howHeard: '',
     acceptTerms: false
   });
   
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-  
-  const handleRadioChange = (name: string, value: string) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   
@@ -79,7 +67,7 @@ const RegistrationSection = () => {
     e.preventDefault();
     
     // Basic validation
-    if (!formData.fullName || !formData.age || !formData.phone || !formData.email || !formData.parentName || !formData.parentPhone) {
+    if (!formData.fullName || !formData.age || !formData.city || !formData.neighborhood || !formData.parentName || !formData.parentPhone) {
       toast({
         title: "Campos obrigatórios",
         description: "Por favor, preencha todos os campos obrigatórios.",
@@ -120,15 +108,10 @@ const RegistrationSection = () => {
     setFormData({
       fullName: '',
       age: '',
-      phone: '',
-      email: '',
-      address: '',
+      city: '',
+      neighborhood: '',
       parentName: '',
       parentPhone: '',
-      healthInfo: '',
-      shirtSize: 'M',
-      hasExperience: 'no',
-      howHeard: '',
       acceptTerms: false
     });
     
@@ -310,42 +293,28 @@ const RegistrationSection = () => {
                           />
                         </div>
                         
-                        {/* Phone */}
+                        {/* City */}
                         <div className="space-y-2">
-                          <Label htmlFor="phone">Telefone/WhatsApp do Participante *</Label>
+                          <Label htmlFor="city">Cidade *</Label>
                           <Input 
-                            id="phone" 
-                            name="phone" 
-                            value={formData.phone}
+                            id="city" 
+                            name="city" 
+                            value={formData.city}
                             onChange={handleInputChange}
-                            placeholder="(XX) XXXXX-XXXX"
+                            placeholder="Sua cidade"
                             required
                           />
                         </div>
                         
-                        {/* Email */}
+                        {/* Neighborhood */}
                         <div className="space-y-2">
-                          <Label htmlFor="email">E-mail *</Label>
+                          <Label htmlFor="neighborhood">Bairro *</Label>
                           <Input 
-                            id="email" 
-                            name="email" 
-                            value={formData.email}
+                            id="neighborhood" 
+                            name="neighborhood" 
+                            value={formData.neighborhood}
                             onChange={handleInputChange}
-                            type="email"
-                            placeholder="email@exemplo.com"
-                            required
-                          />
-                        </div>
-                        
-                        {/* Address */}
-                        <div className="space-y-2 md:col-span-2">
-                          <Label htmlFor="address">Endereço Completo *</Label>
-                          <Input 
-                            id="address" 
-                            name="address" 
-                            value={formData.address}
-                            onChange={handleInputChange}
-                            placeholder="Rua, número, bairro, cidade"
+                            placeholder="Seu bairro"
                             required
                           />
                         </div>
@@ -381,88 +350,6 @@ const RegistrationSection = () => {
                             required
                           />
                         </div>
-                      </div>
-                    </div>
-                    
-                    {/* Additional Information */}
-                    <div>
-                      <h4 className="text-lg font-semibold text-onda-blue mb-4">Informações Adicionais</h4>
-                      
-                      {/* Health Information */}
-                      <div className="space-y-2 mb-6">
-                        <Label htmlFor="healthInfo">Informações de Saúde</Label>
-                        <Textarea 
-                          id="healthInfo" 
-                          name="healthInfo" 
-                          value={formData.healthInfo}
-                          onChange={handleInputChange}
-                          placeholder="Alergias, medicamentos, condições médicas, restrições alimentares, etc."
-                          className="h-24"
-                        />
-                      </div>
-                      
-                      {/* T-Shirt Size */}
-                      <div className="space-y-3 mb-6">
-                        <Label>Tamanho de Camiseta</Label>
-                        <RadioGroup 
-                          defaultValue="M" 
-                          value={formData.shirtSize}
-                          onValueChange={(value) => handleRadioChange('shirtSize', value)}
-                          className="flex flex-wrap gap-4"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="PP" id="shirt-pp" />
-                            <Label htmlFor="shirt-pp">PP</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="P" id="shirt-p" />
-                            <Label htmlFor="shirt-p">P</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="M" id="shirt-m" />
-                            <Label htmlFor="shirt-m">M</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="G" id="shirt-g" />
-                            <Label htmlFor="shirt-g">G</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="GG" id="shirt-gg" />
-                            <Label htmlFor="shirt-gg">GG</Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-                      
-                      {/* Has Surfing Experience */}
-                      <div className="space-y-3 mb-6">
-                        <Label>Tem experiência com surf?</Label>
-                        <RadioGroup 
-                          defaultValue="no" 
-                          value={formData.hasExperience}
-                          onValueChange={(value) => handleRadioChange('hasExperience', value)}
-                          className="flex gap-4"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="yes" id="exp-yes" />
-                            <Label htmlFor="exp-yes">Sim</Label>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="no" id="exp-no" />
-                            <Label htmlFor="exp-no">Não</Label>
-                          </div>
-                        </RadioGroup>
-                      </div>
-                      
-                      {/* How they heard about the event */}
-                      <div className="space-y-2">
-                        <Label htmlFor="howHeard">Como ficou sabendo do ONDA?</Label>
-                        <Input 
-                          id="howHeard" 
-                          name="howHeard" 
-                          value={formData.howHeard}
-                          onChange={handleInputChange}
-                          placeholder="Amigos, Instagram, Facebook, etc."
-                        />
                       </div>
                     </div>
                     
