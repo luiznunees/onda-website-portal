@@ -176,12 +176,12 @@ const AdminDashboard = () => {
                 </div>
                 
                 <div className="w-full md:w-1/4">
-                  <Select value={filterType || ""} onValueChange={setFilterType}>
+                  <Select value={filterType || "all"} onValueChange={setFilterType}>
                     <SelectTrigger>
                       <SelectValue placeholder="Tipo de Participante" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todos</SelectItem>
+                      <SelectItem value="all">Todos</SelectItem>
                       <SelectItem value="surfista">Surfista</SelectItem>
                       <SelectItem value="marujo">Marujo</SelectItem>
                       <SelectItem value="equipe">Equipe de Apoio</SelectItem>
@@ -190,12 +190,12 @@ const AdminDashboard = () => {
                 </div>
                 
                 <div className="w-full md:w-1/4">
-                  <Select value={filterStatus || ""} onValueChange={setFilterStatus}>
+                  <Select value={filterStatus || "all"} onValueChange={setFilterStatus}>
                     <SelectTrigger>
                       <SelectValue placeholder="Status de Pagamento" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todos</SelectItem>
+                      <SelectItem value="all">Todos</SelectItem>
                       <SelectItem value="pendente">Pendente</SelectItem>
                       <SelectItem value="pago">Pago</SelectItem>
                       <SelectItem value="confirmado">Confirmado</SelectItem>
