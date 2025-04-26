@@ -3,25 +3,37 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import NavBar from "@/components/layout/NavBar";
 import Footer from "@/components/layout/Footer";
-import VpnHero from "@/components/vpn/VpnHero";
-import VpnFeatures from "@/components/vpn/VpnFeatures";
-import VpnPricing from "@/components/vpn/VpnPricing";
-import VpnTestimonials from "@/components/vpn/VpnTestimonials";
+import HeroBanner from "@/components/home/HeroBanner";
+import AboutSection from "@/components/home/AboutSection";
+import RegistrationSection from "@/components/home/RegistrationSection";
+import DonationSection from "@/components/home/DonationSection";
+import TestimonialSection from "@/components/home/TestimonialSection";
+import FaqSection from "@/components/home/FaqSection";
 
 const Index = () => {
   useEffect(() => {
-    document.title = "VPN Pro - Sua privacidade em primeiro lugar";
+    document.title = "ONDA 2025 - Viva a melhor experiência da sua vida! 🌊✨";
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col">
       <NavBar />
       
       <main className="flex-grow">
-        <VpnHero />
-        <VpnFeatures />
-        <VpnPricing />
-        <VpnTestimonials />
+        <HeroBanner />
+        <AboutSection />
+        <RegistrationSection />
+        
+        {/* Wave Divider */}
+        <div className="relative h-24 bg-white">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="absolute bottom-0 w-full">
+            <path fill="#0099ff" fillOpacity="1" d="M0,224L48,218.7C96,213,192,203,288,208C384,213,480,235,576,234.7C672,235,768,213,864,197.3C960,181,1056,171,1152,181.3C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          </svg>
+        </div>
+        
+        <DonationSection />
+        <TestimonialSection />
+        <FaqSection />
       </main>
       
       <Footer />
